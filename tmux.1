@@ -3809,6 +3809,20 @@ section.
 .D1 (alias: Ic loadb )
 Load the contents of the specified paste buffer from
 .Ar path .
+.It Xo Ic load-history
+.Op Fl a
+.Op Ar path
+.Xc
+.D1 (alias: Ic loadh )
+Load and replace the contents of the status prompt history from
+.Ar path .
+The
+.Fl a
+option appends to rather than overwriting the prompt history.
+If
+.Ar path
+isn't specified it defaults to
+.Pa ~/.tmux.history .
 .It Xo Ic paste-buffer
 .Op Fl dpr
 .Op Fl b Ar buffer-name
@@ -3844,6 +3858,20 @@ Save the contents of the specified paste buffer to
 The
 .Fl a
 option appends to rather than overwriting the file.
+.It Xo Ic save-history
+.Op Fl a
+.Op Ar path
+.Xc
+.D1 (alias: Ic saveh )
+Save the contents of the status prompt history to
+.Ar path .
+The
+.Fl a
+option appends to rather than overwriting the file.
+If
+.Ar path
+isn't specified it defaults to
+.Pa ~/.tmux.history .
 .It Xo Ic set-buffer
 .Op Fl a
 .Op Fl b Ar buffer-name
@@ -4075,6 +4103,10 @@ Default
 configuration file.
 .It Pa @SYSCONFDIR@/tmux.conf
 System-wide configuration file.
+.It Pa ~/.tmux.history
+Default
+.Nm
+status prompt history file.
 .El
 .Sh EXAMPLES
 To create a new

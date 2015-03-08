@@ -21,6 +21,7 @@
 
 #include <errno.h>
 #include <limits.h>
+#include <pwd.h>
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
@@ -48,9 +49,46 @@ char   *status_prompt_complete_prefix(const char **, u_int);
 char   *status_prompt_complete(struct session *, const char *);
 
 /* Status prompt history. */
-#define PROMPT_HISTORY 100
 char	**status_prompt_hlist;
 u_int	  status_prompt_hsize;
+
+/* Load status prompt history from file. */
+void
+status_prompt_load_history()
+{
+	struct cmd_list	*cmdlist;
+	char		*cause;
+	int		 error;
+	struct cmd_q	*cmdq;
+
+	cmdq = cmdq_new(NULL);
+	error = cmd_string_parse("load-history", &cmdlist,
+				 "<status.c>", 0, &cause);
+	if (error != 0)
+		fatalx("bad load history");
+	cmdq_run(cmdq, cmdlist, NULL);
+	cmd_list_free(cmdlist);
+	cmdq_free(cmdq);
+}
+
+/* Save status prompt history to file. */
+void
+status_prompt_save_history()
+{
+	struct cmd_list	*cmdlist;
+	char		*cause;
+	int		 error;
+	struct cmd_q	*cmdq;
+
+	cmdq = cmdq_new(NULL);
+	error = cmd_string_parse("save-history", &cmdlist,
+				 "<status.c>", 0, &cause);
+	if (error != 0)
+		fatalx("bad save history");
+	cmdq_run(cmdq, cmdlist, NULL);
+	cmd_list_free(cmdlist);
+	cmdq_free(cmdq);
+}
 
 /* Status output tree. */
 RB_GENERATE(status_out_tree, status_out, entry, status_out_cmp);

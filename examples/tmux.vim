@@ -88,6 +88,8 @@ syn keyword tmuxCmds
 	\ lsw
 	\ load-buffer
 	\ loadb
+	\ load-history
+	\ loadh
 	\ lock-client
 	\ lockc
 	\ lock[-server]
@@ -123,6 +125,8 @@ syn keyword tmuxCmds
 	\ run[-shell]
 	\ save-buffer
 	\ saveb
+	\ save-history
+	\ saveh
 	\ select-layout
 	\ selectl
 	\ select-pane

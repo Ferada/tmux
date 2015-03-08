@@ -1763,6 +1763,7 @@ extern const struct cmd_entry cmd_list_panes_entry;
 extern const struct cmd_entry cmd_list_sessions_entry;
 extern const struct cmd_entry cmd_list_windows_entry;
 extern const struct cmd_entry cmd_load_buffer_entry;
+extern const struct cmd_entry cmd_load_status_history_entry;
 extern const struct cmd_entry cmd_lock_client_entry;
 extern const struct cmd_entry cmd_lock_server_entry;
 extern const struct cmd_entry cmd_lock_session_entry;
@@ -1785,6 +1786,7 @@ extern const struct cmd_entry cmd_respawn_window_entry;
 extern const struct cmd_entry cmd_rotate_window_entry;
 extern const struct cmd_entry cmd_run_shell_entry;
 extern const struct cmd_entry cmd_save_buffer_entry;
+extern const struct cmd_entry cmd_save_status_history_entry;
 extern const struct cmd_entry cmd_select_layout_entry;
 extern const struct cmd_entry cmd_select_pane_entry;
 extern const struct cmd_entry cmd_select_window_entry;
@@ -1931,6 +1933,12 @@ int	 server_set_stdin_callback(struct client *, void (*)(struct client *,
 void	 server_unzoom_window(struct window *);
 
 /* status.c */
+
+/* Status prompt history. */
+#define PROMPT_HISTORY 100
+extern char	**status_prompt_hlist;
+extern u_int	  status_prompt_hsize;
+
 int	 status_out_cmp(struct status_out *, struct status_out *);
 RB_PROTOTYPE(status_out_tree, status_out, entry, status_out_cmp);
 int	 status_at_line(struct client *);
@@ -1947,6 +1955,9 @@ void	 status_prompt_clear(struct client *);
 int	 status_prompt_redraw(struct client *);
 void	 status_prompt_key(struct client *, int);
 void	 status_prompt_update(struct client *, const char *, const char *);
+void	 status_prompt_add_history(const char *line);
+void	 status_prompt_load_history(void);
+void	 status_prompt_save_history(void);
 
 /* resize.c */
 void	 recalculate_sizes(void);

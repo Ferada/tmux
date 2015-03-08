@@ -46,6 +46,7 @@ _tmux()
     list-sessions \
     list-windows \
     load-buffer \
+    load-history \
     lock-client \
     lock-server \
     lock-session \
@@ -66,6 +67,7 @@ _tmux()
     rotate-window \
     run-shell \
     save-buffer \
+    save-history \
     select-layout \
     select-pane \
     select-prompt \
