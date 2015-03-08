@@ -47,10 +47,112 @@ const char **status_prompt_complete_list(u_int *, const char *);
 char   *status_prompt_complete_prefix(const char **, u_int);
 char   *status_prompt_complete(struct session *, const char *);
 
+char   *status_prompt_find_history_file(void);
+
 /* Status prompt history. */
 #define PROMPT_HISTORY 100
 char	**status_prompt_hlist;
 u_int	  status_prompt_hsize;
+
+/* Find the history file to load/save from/to. */
+char *
+status_prompt_find_history_file(void)
+{
+	const char	*home, *history_file;
+	char		*path;
+
+	history_file = options_get_string(&global_options, "history-file");
+	if (*history_file == '\0')
+		return NULL;
+
+	if (*history_file == '/')
+		return xstrdup(history_file);
+
+	if (*history_file != '~') {
+		log_debug("%s is not an absolute path", history_file);
+		return NULL;
+	}
+
+        /* if we get here it was the default value */
+	if ((home = find_home()) == NULL)
+		return NULL;
+
+	xasprintf(&path, "%s%s", home, history_file + 1);
+
+	return path;
+}
+
+/* Load status prompt history from file. */
+void
+status_prompt_load_history(void)
+{
+	FILE		*f;
+	char		*line, *tmp;
+	size_t		 length;
+	char		*history_file;
+
+	if ((history_file = status_prompt_find_history_file()) == NULL)
+		return;
+
+	log_debug("loading %s", history_file);
+	f = fopen(history_file, "r");
+	if (f == NULL) {
+		log_debug("%s: %s", history_file, strerror(errno));
+		goto out;
+	}
+
+	for (;;) {
+		if ((line = fgetln(f, &length)) == NULL)
+			break;
+
+		if (length > 0) {
+			if (line[length - 1] == '\n') {
+				line[length - 1] = '\0';
+				status_prompt_add_history(line);
+			} else {
+				tmp = malloc(length + 1);
+				memcpy(tmp, line, length);
+				tmp[length] = '\0';
+				status_prompt_add_history(tmp);
+				free(tmp);
+			}
+		}
+	}
+
+	fclose(f);
+
+out:
+	free(history_file);
+}
+
+/* Save status prompt history to file. */
+void
+status_prompt_save_history(void)
+{
+	FILE		*f;
+	u_int		 i;
+	char		*history_file;
+
+	if ((history_file = status_prompt_find_history_file()) == NULL)
+		return;
+
+	log_debug("saving %s", history_file);
+	f = fopen(history_file, "w");
+	if (f == NULL) {
+		log_debug("%s: %s", history_file, strerror(errno));
+		goto out;
+	}
+
+	for (i = 0; i < status_prompt_hsize; i++) {
+		fputs(status_prompt_hlist[i], f);
+		fputc('\n', f);
+	}
+
+	fclose(f);
+
+out:
+	free(history_file);
+}
 
 /* Status output tree. */
 RB_GENERATE(status_out_tree, status_out, entry, status_out_cmp);

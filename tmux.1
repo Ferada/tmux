@@ -2556,6 +2556,11 @@ is in milliseconds.
 Set the maximum number of lines held in window history.
 This setting applies only to new windows - existing window histories are not
 resized and retain the limit at the point they were created.
+.It Ic history-file Ar path
+Set the file to persist the status buffer history to.
+The default is
+.Pa .tmux.history .
+Setting this to an empty string will disable the functionality.
 .It Ic lock-after-time Ar number
 Lock the session (like the
 .Ic lock-session
@@ -4075,6 +4080,8 @@ Default
 configuration file.
 .It Pa @SYSCONFDIR@/tmux.conf
 System-wide configuration file.
+.It Pa ~/.tmux.history
+Default status buffer history file.
 .El
 .Sh EXAMPLES
 To create a new
